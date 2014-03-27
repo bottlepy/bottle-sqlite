@@ -78,9 +78,9 @@ class SQLitePlugin(object):
     
         # Override global configuration with route-specific values.
         if "sqlite" in config: # support for configuration before `ConfigDict` namespaces
-            g = lambda key, default: config.get('sqlalchemy', {}).get(key, default)
+            g = lambda key, default: config.get('sqlite', {}).get(key, default)
         else:
-            g = lambda key, default: config.get('sqlalchemy.' + key, default)
+            g = lambda key, default: config.get('sqlite.' + key, default)
     
         dbfile = g('dbfile', self.dbfile)
         autocommit = g('autocommit', self.autocommit)
