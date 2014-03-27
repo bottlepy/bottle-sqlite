@@ -90,7 +90,7 @@ class SQLitePlugin(object):
         # Test if the original callback accepts a 'db' keyword.
         # Ignore it if it does not need a database handle.
         argspec = inspect.getargspec(_callback)
-        if not ((keyword and argspec.keywords) or keyword in argspec.args):
+        if keyword not in argspec.args:
             return callback
         
         def wrapper(*args, **kwargs):
