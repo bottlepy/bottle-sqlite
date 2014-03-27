@@ -34,7 +34,13 @@ __license__ = 'MIT'
 
 import sqlite3
 import inspect
-from bottle import HTTPResponse, HTTPError
+import bottle
+
+# PluginError is defined to bottle >= 0.10
+if not hasattr(bottle, 'PluginError'):
+    class PluginError(bottle.BottleException):
+        pass
+    bottle.PluginError = PluginError
 
 
 class SQLitePlugin(object):
@@ -61,20 +67,32 @@ class SQLitePlugin(object):
                 raise PluginError("Found another sqlite plugin with "\
                 "conflicting settings (non-unique keyword).")
 
-    def apply(self, callback, context):
+    def apply(self, callback, route):
+        # hack to support bottle v0.9.x
+        if bottle.__version__.startswith('0.9'):
+            config = route['config']
+            _callback = route['callback']
+        else:
+            config = route.config
+            _callback = route.callback
+    
         # Override global configuration with route-specific values.
-        conf = context['config'].get('sqlite') or {}
-        dbfile = conf.get('dbfile', self.dbfile)
-        autocommit = conf.get('autocommit', self.autocommit)
-        dictrows = conf.get('dictrows', self.dictrows)
-        keyword = conf.get('keyword', self.keyword)
+        if "sqlite" in config: # support for configuration before `ConfigDict` namespaces
+            g = lambda key, default: config.get('sqlalchemy', {}).get(key, default)
+        else:
+            g = lambda key, default: config.get('sqlalchemy.' + key, default)
+    
+        dbfile = g('dbfile', self.dbfile)
+        autocommit = g('autocommit', self.autocommit)
+        dictrows = g('dictrows', self.dictrows)
+        keyword = g('keyword', self.keyword)
 
         # Test if the original callback accepts a 'db' keyword.
         # Ignore it if it does not need a database handle.
-        args = inspect.getargspec(context['callback'])[0]
-        if keyword not in args:
+        argspec = inspect.getargspec(_callback)
+        if not ((keyword and argspec.keywords) or keyword in argspec.args):
             return callback
-
+        
         def wrapper(*args, **kwargs):
             # Connect to the database
             db = sqlite3.connect(dbfile)
@@ -86,12 +104,12 @@ class SQLitePlugin(object):
             try:
                 rv = callback(*args, **kwargs)
                 if autocommit: db.commit()
-            except sqlite3.IntegrityError, e:
+            except sqlite3.IntegrityError as e:
                 db.rollback()
                 raise HTTPError(500, "Database Error", e)
-            except HTTPError, e:
+            except bottle.HTTPError as e:
                 raise
-            except HTTPResponse, e:
+            except bottle.HTTPResponse as e:
                 if autocommit: db.commit()
                 raise
             finally:
