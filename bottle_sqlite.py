@@ -50,6 +50,7 @@ class SQLitePlugin(object):
     settings on a per-route basis. '''
 
     name = 'sqlite'
+    api = 2
 
     def __init__(self, dbfile=':memory:', autocommit=True, dictrows=True,
                  keyword='db'):
