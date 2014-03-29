@@ -54,19 +54,20 @@ class SQLitePlugin(object):
 
     def __init__(self, dbfile=':memory:', autocommit=True, dictrows=True,
                  keyword='db'):
-         self.dbfile = dbfile
-         self.autocommit = autocommit
-         self.dictrows = dictrows
-         self.keyword = keyword
+        self.dbfile = dbfile
+        self.autocommit = autocommit
+        self.dictrows = dictrows
+        self.keyword = keyword
 
     def setup(self, app):
         ''' Make sure that other installed plugins don't affect the same
             keyword argument.'''
         for other in app.plugins:
-            if not isinstance(other, SQLitePlugin): continue
+            if not isinstance(other, SQLitePlugin):
+                continue
             if other.keyword == self.keyword:
-                raise PluginError("Found another sqlite plugin with "\
-                "conflicting settings (non-unique keyword).")
+                raise PluginError("Found another sqlite plugin with "
+                                  "conflicting settings (non-unique keyword).")
             elif other.name == self.name:
                 self.name += '_%s' % self.keyword
 
@@ -78,13 +79,14 @@ class SQLitePlugin(object):
         else:
             config = route.config
             _callback = route.callback
-    
+
         # Override global configuration with route-specific values.
-        if "sqlite" in config: # support for configuration before `ConfigDict` namespaces
+        if "sqlite" in config:
+            # support for configuration before `ConfigDict` namespaces
             g = lambda key, default: config.get('sqlite', {}).get(key, default)
         else:
             g = lambda key, default: config.get('sqlite.' + key, default)
-    
+
         dbfile = g('dbfile', self.dbfile)
         autocommit = g('autocommit', self.autocommit)
         dictrows = g('dictrows', self.dictrows)
@@ -95,25 +97,28 @@ class SQLitePlugin(object):
         argspec = inspect.getargspec(_callback)
         if keyword not in argspec.args:
             return callback
-        
+
         def wrapper(*args, **kwargs):
             # Connect to the database
             db = sqlite3.connect(dbfile)
             # This enables column access by name: row['column_name']
-            if dictrows: db.row_factory = sqlite3.Row
+            if dictrows:
+                db.row_factory = sqlite3.Row
             # Add the connection handle as a keyword argument.
             kwargs[keyword] = db
 
             try:
                 rv = callback(*args, **kwargs)
-                if autocommit: db.commit()
+                if autocommit:
+                    db.commit()
             except sqlite3.IntegrityError as e:
                 db.rollback()
-                raise HTTPError(500, "Database Error", e)
+                raise bottle.HTTPError(500, "Database Error", e)
             except bottle.HTTPError as e:
                 raise
             except bottle.HTTPResponse as e:
-                if autocommit: db.commit()
+                if autocommit:
+                    db.commit()
                 raise
             finally:
                 db.close()

@@ -1,8 +1,8 @@
 import unittest
-import os
+import sqlite3
 import bottle
 from bottle.ext import sqlite
-import sqlite3
+
 
 class SQLiteTest(unittest.TestCase):
     def setUp(self):
@@ -14,20 +14,20 @@ class SQLiteTest(unittest.TestCase):
         @self.app.get('/')
         def test(db):
             self.assertEqual(type(db), type(sqlite3.connect(':memory:')))
-        self.app({'PATH_INFO':'/', 'REQUEST_METHOD':'GET'}, lambda x, y: None)
+        self._request('/')
 
     def test_without_keyword(self):
         self.plugin = self.app.install(sqlite.Plugin())
 
         @self.app.get('/')
-        def test():
+        def test_1():
             pass
-        self.app({'PATH_INFO':'/', 'REQUEST_METHOD':'GET'}, lambda x, y: None)
+        self._request('/')
 
         @self.app.get('/2')
-        def test(**kw):
+        def test_2(**kw):
             self.assertFalse('db' in kw)
-        self.app({'PATH_INFO':'/2', 'REQUEST_METHOD':'GET'}, lambda x, y: None)
+        self._request('/2')
 
     def test_install_conflicts(self):
         self.app.install(sqlite.Plugin())
@@ -38,8 +38,19 @@ class SQLiteTest(unittest.TestCase):
             pass
 
         # I have two plugins working with different names
-        self.app({'PATH_INFO': '/', 'REQUEST_METHOD': 'GET'}, lambda x, y: None)
+        self._request('/')
 
+    def test_raise_sqlite_integrity_error(self):
+        self.plugin = self.app.install(sqlite.Plugin())
+
+        @self.app.get('/')
+        def test(db):
+            raise sqlite3.IntegrityError()
+        self._request('/')
+
+    def _request(self, path, method='GET'):
+        self.app({'PATH_INFO': path, 'REQUEST_METHOD': method},
+                 lambda x, y: None)
 
 if __name__ == '__main__':
     unittest.main()
