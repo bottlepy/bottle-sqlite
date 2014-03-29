@@ -2,6 +2,8 @@
 Bottle-SQLite
 =====================
 
+.. image:: https://travis-ci.org/bottlepy/bottle-sqlite.svg?branch=master   :target: https://travis-ci.org/bottlepy/bottle-sqlite
+
 SQLite is a self-contained SQL database engine that runs locally and does not 
 require any additional server software or setup. The sqlite3 module is part of the 
 Python standard library and already installed on most systems. It it very useful 
