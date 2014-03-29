@@ -67,6 +67,8 @@ class SQLitePlugin(object):
             if other.keyword == self.keyword:
                 raise PluginError("Found another sqlite plugin with "\
                 "conflicting settings (non-unique keyword).")
+            elif other.name == self.name:
+                self.name += '_%s' % self.keyword
 
     def apply(self, callback, route):
         # hack to support bottle v0.9.x

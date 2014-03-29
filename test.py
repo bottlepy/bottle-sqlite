@@ -28,6 +28,18 @@ class SQLiteTest(unittest.TestCase):
         def test(**kw):
             self.assertFalse('db' in kw)
         self.app({'PATH_INFO':'/2', 'REQUEST_METHOD':'GET'}, lambda x, y: None)
-        
+
+    def test_install_conflicts(self):
+        self.app.install(sqlite.Plugin())
+        self.app.install(sqlite.Plugin(keyword='db2'))
+
+        @self.app.get('/')
+        def test(db, db2):
+            pass
+
+        # I have two plugins working with different names
+        self.app({'PATH_INFO': '/', 'REQUEST_METHOD': 'GET'}, lambda x, y: None)
+
+
 if __name__ == '__main__':
     unittest.main()
