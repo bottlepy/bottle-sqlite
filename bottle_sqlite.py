@@ -52,12 +52,19 @@ class SQLitePlugin(object):
     name = 'sqlite'
     api = 2
 
+    ''' python3 moves unicode to str '''
+    try:
+        unicode
+    except NameError:
+        unicode = str
+
     def __init__(self, dbfile=':memory:', autocommit=True, dictrows=True,
-                 keyword='db'):
+                 keyword='db', text_factory=unicode):
         self.dbfile = dbfile
         self.autocommit = autocommit
         self.dictrows = dictrows
         self.keyword = keyword
+        self.text_factory = text_factory
 
     def setup(self, app):
         ''' Make sure that other installed plugins don't affect the same
@@ -91,6 +98,7 @@ class SQLitePlugin(object):
         autocommit = g('autocommit', self.autocommit)
         dictrows = g('dictrows', self.dictrows)
         keyword = g('keyword', self.keyword)
+        text_factory = g('keyword', self.text_factory)
 
         # Test if the original callback accepts a 'db' keyword.
         # Ignore it if it does not need a database handle.
@@ -101,6 +109,8 @@ class SQLitePlugin(object):
         def wrapper(*args, **kwargs):
             # Connect to the database
             db = sqlite3.connect(dbfile)
+            # set text factory
+            db.text_factory = text_factory
             # This enables column access by name: row['column_name']
             if dictrows:
                 db.row_factory = sqlite3.Row
