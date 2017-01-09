@@ -28,6 +28,13 @@ class SQLiteTest(unittest.TestCase):
     def tearDown(self):
         os.unlink(self.plugin.dbfile)
 
+    def test_with_view(self):
+        @self.app.get('/')
+        @bottle.view('test_view')
+        def test(db):
+            self.assertEqual(type(db), type(sqlite3.connect(':memory:')))
+        self._request('/')
+
     def test_with_keyword(self):
         @self.app.get('/')
         def test(db):

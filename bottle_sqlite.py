@@ -83,9 +83,11 @@ class SQLitePlugin(object):
         if bottle.__version__.startswith('0.9'):
             config = route['config']
             _callback = route['callback']
+            argspec = inspect.getargspec(_callback).args
         else:
             config = route.config
             _callback = route.callback
+            argspec =  route.get_callback_args()
 
         # Override global configuration with route-specific values.
         if "sqlite" in config:
@@ -100,10 +102,7 @@ class SQLitePlugin(object):
         keyword = g('keyword', self.keyword)
         text_factory = g('keyword', self.text_factory)
 
-        # Test if the original callback accepts a 'db' keyword.
-        # Ignore it if it does not need a database handle.
-        argspec = inspect.getargspec(_callback)
-        if keyword not in argspec.args:
+        if keyword not in argspec:
             return callback
 
         def wrapper(*args, **kwargs):
