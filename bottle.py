@@ -580,6 +580,7 @@ class Route(object):
         func = getattr(func, '__func__' if py3k else 'im_func', func)
         closure_attr = '__closure__' if py3k else 'func_closure'
         while hasattr(func, closure_attr) and getattr(func, closure_attr):
+            func_previous = func
             attributes = getattr(func, closure_attr)
             func = attributes[0].cell_contents
 
@@ -588,6 +589,9 @@ class Route(object):
                 # pick first FunctionType instance from multiple arguments
                 func = filter(lambda x: isinstance(x, FunctionType),
                               map(lambda x: x.cell_contents, attributes))
+                if len(list(func))==0:
+                    func = func_previous
+                    break
                 func = list(func)[0]  # py3 support
         return func
 
