@@ -104,7 +104,17 @@ class SQLitePlugin(object):
         # Ignore it if it does not need a database handle.
         argspec = inspect.getargspec(_callback)
         if keyword not in argspec.args:
-            return callback
+            #check for closure
+            no_keyword_arg = True
+            for closure in _callback.func_closure:
+                contents = closure.cell_contents
+                if callable(contents):
+                    argspec = inspect.getargspec(contents)
+                    if keyword in argspec.args:
+                        no_keyword_arg  = False
+                        break
+            if no_keyword_arg:
+                return callback
 
         def wrapper(*args, **kwargs):
             # Connect to the database
