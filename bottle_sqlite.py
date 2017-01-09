@@ -35,6 +35,7 @@ __license__ = 'MIT'
 import sqlite3
 import inspect
 import bottle
+import types
 
 # PluginError is defined to bottle >= 0.10
 if not hasattr(bottle, 'PluginError'):
@@ -104,7 +105,18 @@ class SQLitePlugin(object):
         # Ignore it if it does not need a database handle.
         argspec = inspect.getargspec(_callback)
         if keyword not in argspec.args:
-            return callback
+            #check for closure
+            no_keyword_arg = True
+            if _callback.func_closure is not None:
+                for closure in _callback.func_closure:
+                    contents = closure.cell_contents
+                    if isinstance(contents, types.FunctionType):
+                        argspec = inspect.getargspec(contents)
+                        if keyword in argspec.args:
+                            no_keyword_arg  = False
+                            break
+            if no_keyword_arg:
+                return callback
 
         def wrapper(*args, **kwargs):
             # Connect to the database
