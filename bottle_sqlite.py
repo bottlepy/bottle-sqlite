@@ -98,7 +98,7 @@ class SQLitePlugin(object):
         autocommit = g('autocommit', self.autocommit)
         dictrows = g('dictrows', self.dictrows)
         keyword = g('keyword', self.keyword)
-        text_factory = g('keyword', self.text_factory)
+        text_factory = g('text_factory', self.text_factory)
 
         # Test if the original callback accepts a 'db' keyword.
         # Ignore it if it does not need a database handle.
