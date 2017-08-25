@@ -67,6 +67,7 @@ The following configuration options exist for the plugin class:
 * **keyword**: The keyword argument name that triggers the plugin (default: 'db').
 * **autocommit**: Whether or not to commit outstanding transactions at the end of the request cycle (default: True).
 * **dictrows**: Whether or not to support dict-like access to row objects (default: True).
+* **text_factory**: The text_factory for the connection (default: unicode).
 
 You can override each of these values on a per-route basis:: 
 
