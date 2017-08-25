@@ -59,12 +59,16 @@ class SQLitePlugin(object):
         unicode = str
 
     def __init__(self, dbfile=':memory:', autocommit=True, dictrows=True,
-                 keyword='db', text_factory=unicode):
+                 keyword='db', text_factory=unicode,
+                 functions=None, aggregates=None, collations=None):
         self.dbfile = dbfile
         self.autocommit = autocommit
         self.dictrows = dictrows
         self.keyword = keyword
         self.text_factory = text_factory
+        self.functions = functions or {}
+        self.aggregates = aggregates or {}
+        self.collations = collations or {}
 
     def setup(self, app):
         ''' Make sure that other installed plugins don't affect the same
@@ -99,6 +103,9 @@ class SQLitePlugin(object):
         dictrows = g('dictrows', self.dictrows)
         keyword = g('keyword', self.keyword)
         text_factory = g('text_factory', self.text_factory)
+        functions = g('functions', self.functions)
+        aggregates = g('aggregates', self.aggregates)
+        collations = g('collations', self.collations)
 
         # Test if the original callback accepts a 'db' keyword.
         # Ignore it if it does not need a database handle.
@@ -114,6 +121,13 @@ class SQLitePlugin(object):
             # This enables column access by name: row['column_name']
             if dictrows:
                 db.row_factory = sqlite3.Row
+            # Create user functions, aggregates and collations
+            for name, value in functions.items():
+                db.create_function(name, *value)
+            for name, value in aggregates.items():
+                db.create_aggregate(name, *value)
+            for name, value in collations.items():
+                db.create_collation(name, value)
             # Add the connection handle as a keyword argument.
             kwargs[keyword] = db
 

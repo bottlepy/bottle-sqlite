@@ -84,6 +84,51 @@ class SQLiteTest(unittest.TestCase):
 
         self._request('/')
 
+    def test_user_functions(self):
+        class SumSq:
+            def __init__(self):
+                self.result = 0
+
+            def step(self, value):
+                if value:
+                    self.result += value**2
+
+            def finalize(self):
+                return self.result
+
+        def collate_reverse(string1, string2):
+            if string1 == string2:
+                return 0
+            elif string1 < string2:
+                return 1
+            else:
+                return -1
+
+        testfunc1 = lambda: 'test'
+        testfunc2 = lambda x: x + 1
+
+        self.app.install(sqlite.Plugin(
+            keyword='db4',
+            functions={'testfunc1': (0, testfunc1), 'testfunc2': (1, testfunc2)},
+            aggregates={'sumsq': (1, SumSq)},
+            collations={'reverse': collate_reverse},
+        ))
+
+        @self.app.get('/')
+        def test(db, db4):
+            db4.execute("CREATE TABLE todo (id INTEGER PRIMARY KEY, task char(100) NOT NULL)")
+            result = db4.execute("SELECT testfunc1(), testfunc2(2)").fetchone()
+            self.assertEqual(tuple(result), ('test', 3))
+            db4.execute("INSERT INTO todo VALUES (10, 'a')")
+            db4.execute("INSERT INTO todo VALUES (11, 'a')")
+            db4.execute("INSERT INTO todo VALUES (12, 'a')")
+            result = db4.execute("SELECT sumsq(id) FROM todo WHERE task='a'").fetchone()
+            self.assertEqual(tuple(result), (365,))
+            result = db4.execute("SELECT ('a' < 'b' COLLATE reverse)").fetchone()
+            self.assertEqual(tuple(result), (0,))
+
+        self._request('/')
+
     def test_raise_sqlite_integrity_error(self):
         @self.app.get('/')
         def test(db):
