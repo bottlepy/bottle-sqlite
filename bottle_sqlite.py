@@ -60,7 +60,7 @@ class SQLitePlugin(object):
 
     def __init__(self, dbfile=':memory:', autocommit=True, dictrows=True,
                  keyword='db', text_factory=unicode,
-                 functions=None, aggregates=None, collations=None):
+                 functions=None, aggregates=None, collations=None, extensions=()):
         self.dbfile = dbfile
         self.autocommit = autocommit
         self.dictrows = dictrows
@@ -69,6 +69,7 @@ class SQLitePlugin(object):
         self.functions = functions or {}
         self.aggregates = aggregates or {}
         self.collations = collations or {}
+        self.extensions = extensions
 
     def setup(self, app):
         ''' Make sure that other installed plugins don't affect the same
@@ -106,6 +107,7 @@ class SQLitePlugin(object):
         functions = g('functions', self.functions)
         aggregates = g('aggregates', self.aggregates)
         collations = g('collations', self.collations)
+        extensions = g('extensions', self.extensions)
 
         # Test if the original callback accepts a 'db' keyword.
         # Ignore it if it does not need a database handle.
@@ -128,6 +130,10 @@ class SQLitePlugin(object):
                 db.create_aggregate(name, *value)
             for name, value in collations.items():
                 db.create_collation(name, value)
+            for name in extensions:
+                db.enable_load_extension(True)
+                db.execute("SELECT load_extension(?)", (name,))
+                db.enable_load_extension(False)
             # Add the connection handle as a keyword argument.
             kwargs[keyword] = db
 
