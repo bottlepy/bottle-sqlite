@@ -21,7 +21,7 @@ Install with one of the following commands::
     $ pip install bottle-sqlite
     $ easy_install bottle-sqlite
 
-or download the latest version from github::
+or download the latest version from github:
 
     $ git clone git://github.com/bottlepy/bottle-sqlite.git
     $ cd bottle-sqlite
@@ -30,9 +30,8 @@ or download the latest version from github::
 Usage
 -----
 
-Once installed to an application, the plugin passes an open 
-:class:`sqlite3.Connection` instance to all routes that require a ``db`` keyword 
-argument::
+Once installed to an application, the plugin passes an open `sqlite3.Connection`
+instance to all routes that require a ``db`` keyword argument:
 
     import bottle
 
@@ -60,10 +59,10 @@ Configuration
 
 The following configuration options exist for the plugin class:
 
-* **dbfile**: Database filename (default: in-memory database).
-* **keyword**: The keyword argument name that triggers the plugin (default: 'db').
-* **autocommit**: Whether or not to commit outstanding transactions at the end of the request cycle (default: True).
-* **dictrows**: Whether or not to support dict-like access to row objects (default: True).
+* **dbfile**: Database filename (default: in-memory database)
+* **keyword**: The keyword argument name that triggers the plugin (default: 'db')
+* **autocommit**: Whether or not to commit outstanding transactions at the end of the request cycle (default: True)
+* **dictrows**: Whether or not to support dict-like access to row objects (default: True)
 
 You can override each of these values on a per-route basis:: 
 
@@ -71,7 +70,7 @@ You can override each of these values on a per-route basis::
     def cache(item, db):
         ...
    
-or install two plugins with different ``keyword`` settings to the same application::
+or install two plugins with different ``keyword`` settings to the same application:
 
     app = bottle.Bottle()
     test_db = bottle.ext.sqlite.Plugin(dbfile='/tmp/test.db')
