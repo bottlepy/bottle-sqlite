@@ -1,6 +1,5 @@
-=====================
 Bottle-SQLite
-=====================
+=============
 
 [![Build Status](https://travis-ci.org/alenmeister/bottle-sqlite.svg?branch=master)](https://travis-ci.org/alenmeister/bottle-sqlite)
 
@@ -15,7 +14,7 @@ Once installed, all you have to do is to add a ``db`` keyword argument
 (configurable) to route callbacks that need a database connection.
 
 Installation
-===============
+------------
 
 Install with one of the following commands::
 
@@ -29,7 +28,7 @@ or download the latest version from github::
     $ python setup.py install
 
 Usage
-===============
+-----
 
 Once installed to an application, the plugin passes an open 
 :class:`sqlite3.Connection` instance to all routes that require a ``db`` keyword 
@@ -57,7 +56,7 @@ closed automatically. If an error occurs, any changes to the database since the
 last commit are rolled back to keep the database in a consistent state.
 
 Configuration
-=============
+-------------
 
 The following configuration options exist for the plugin class:
 
