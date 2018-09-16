@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 '''
 Bottle-sqlite is a plugin that integrates SQLite3 with your Bottle
 application. It automatically connects to a database at the beginning of a
