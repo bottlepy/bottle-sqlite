@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 '''
 Bottle-sqlite is a plugin that integrates SQLite3 with your Bottle
 application. It automatically connects to a database at the beginning of a
@@ -102,7 +104,7 @@ class SQLitePlugin(object):
 
         # Test if the original callback accepts a 'db' keyword.
         # Ignore it if it does not need a database handle.
-        argspec = inspect.getargspec(_callback)
+        argspec = inspect.getfullargspec(_callback)
         if keyword not in argspec.args:
             return callback
 

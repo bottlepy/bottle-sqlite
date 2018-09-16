@@ -1,5 +1,27 @@
+os: linux
 language: python
+sudo: false # faster builds
 
-before_install: pip install tox
+matrix:
+  include:
+    - python: 3.6
+      env: TOXENV=py,devel 
+    - python: 3.5
+      env: TOXENV=py,devel
+    - python: 3.4
+      env: TOXENV=py,devel
+    - python: 2.7
+      env: TOXENV=py,devel
 
-script: tox
+install:
+  - pip install tox
+
+script:
+  - tox
+
+branches:
+  only:
+    - master
+
+notifications:
+  email: false

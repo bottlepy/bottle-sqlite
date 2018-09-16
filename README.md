@@ -1,10 +1,7 @@
-=====================
 Bottle-SQLite
-=====================
+=============
 
-.. image:: https://travis-ci.org/bottlepy/bottle-sqlite.png?branch=master
-    :target: https://travis-ci.org/bottlepy/bottle-sqlite
-    :alt: Build Status - Travis CI
+[![Build Status](https://travis-ci.com/alenmeister/bottle-sqlite.svg?branch=master)](https://travis-ci.com/alenmeister/bottle-sqlite)
 
 SQLite is a self-contained SQL database engine that runs locally and does not 
 require any additional server software or setup. The sqlite3 module is part of the 
@@ -17,25 +14,24 @@ Once installed, all you have to do is to add a ``db`` keyword argument
 (configurable) to route callbacks that need a database connection.
 
 Installation
-===============
+------------
 
-Install with one of the following commands::
+Install with one of the following commands:
 
     $ pip install bottle-sqlite
     $ easy_install bottle-sqlite
 
-or download the latest version from github::
+or download the latest version from github:
 
     $ git clone git://github.com/bottlepy/bottle-sqlite.git
     $ cd bottle-sqlite
     $ python setup.py install
 
 Usage
-===============
+-----
 
-Once installed to an application, the plugin passes an open 
-:class:`sqlite3.Connection` instance to all routes that require a ``db`` keyword 
-argument::
+Once installed to an application, the plugin passes an open `sqlite3.Connection`
+instance to all routes that require a ``db`` keyword argument:
 
     import bottle
 
@@ -52,29 +48,29 @@ argument::
 
 Routes that do not expect a ``db`` keyword argument are not affected.
 
-The connection handle is configured so that :class:`sqlite3.Row` objects can be 
+The connection handle is configured so that `sqlite3.Row` objects can be 
 accessed both by index (like tuples) and case-insensitively by name. At the end of 
 the request cycle, outstanding transactions are committed and the connection is 
 closed automatically. If an error occurs, any changes to the database since the 
 last commit are rolled back to keep the database in a consistent state.
 
 Configuration
-=============
+-------------
 
 The following configuration options exist for the plugin class:
 
-* **dbfile**: Database filename (default: in-memory database).
-* **keyword**: The keyword argument name that triggers the plugin (default: 'db').
-* **autocommit**: Whether or not to commit outstanding transactions at the end of the request cycle (default: True).
-* **dictrows**: Whether or not to support dict-like access to row objects (default: True).
+* **dbfile**: Database filename (default: in-memory database)
+* **keyword**: The keyword argument name that triggers the plugin (default: 'db')
+* **autocommit**: Whether or not to commit outstanding transactions at the end of the request cycle (default: True)
+* **dictrows**: Whether or not to support dict-like access to row objects (default: True)
 
-You can override each of these values on a per-route basis:: 
+You can override each of these values on a per-route basis: 
 
     @app.route('/cache/:item', sqlite={'dbfile': ':memory:'})
     def cache(item, db):
         ...
    
-or install two plugins with different ``keyword`` settings to the same application::
+or install two plugins with different ``keyword`` settings to the same application:
 
     app = bottle.Bottle()
     test_db = bottle.ext.sqlite.Plugin(dbfile='/tmp/test.db')
