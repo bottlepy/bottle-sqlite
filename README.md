@@ -1,7 +1,7 @@
 Bottle-SQLite
 =============
 
-[![Build Status](https://travis-ci.org/alenmeister/bottle-sqlite.svg?branch=master)](https://travis-ci.org/alenmeister/bottle-sqlite)
+[![Build Status](https://travis-ci.com/alenmeister/bottle-sqlite.svg?branch=master)](https://travis-ci.com/alenmeister/bottle-sqlite)
 
 SQLite is a self-contained SQL database engine that runs locally and does not 
 require any additional server software or setup. The sqlite3 module is part of the 
