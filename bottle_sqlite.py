@@ -59,13 +59,14 @@ class SQLitePlugin(object):
         unicode = str
 
     def __init__(self, dbfile=':memory:', autocommit=True, dictrows=True,
-                 keyword='db', text_factory=unicode,
+                 keyword='db', text_factory=unicode, readonly=False,
                  functions=None, aggregates=None, collations=None, extensions=()):
         self.dbfile = dbfile
         self.autocommit = autocommit
         self.dictrows = dictrows
         self.keyword = keyword
         self.text_factory = text_factory
+        self.readonly = readonly
         self.functions = functions or {}
         self.aggregates = aggregates or {}
         self.collations = collations or {}
@@ -104,6 +105,7 @@ class SQLitePlugin(object):
         dictrows = g('dictrows', self.dictrows)
         keyword = g('keyword', self.keyword)
         text_factory = g('text_factory', self.text_factory)
+        readonly = g('readonly', self.readonly)
         functions = g('functions', self.functions)
         aggregates = g('aggregates', self.aggregates)
         collations = g('collations', self.collations)
@@ -117,7 +119,12 @@ class SQLitePlugin(object):
 
         def wrapper(*args, **kwargs):
             # Connect to the database
-            db = sqlite3.connect(dbfile)
+            if readonly:
+                # drive letters not transformed
+                urifn = dbfile.replace('?', '%3f').replace('#', '%23')
+                db = sqlite3.connect('file:%s?mode=ro' % urifn, uri=True)
+            else:
+                db = sqlite3.connect(dbfile)
             # set text factory
             db.text_factory = text_factory
             # This enables column access by name: row['column_name']
