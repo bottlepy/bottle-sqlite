@@ -71,6 +71,7 @@ The following configuration options exist for the plugin class:
 * **functions**: Add user-defined functions for use in SQL, should be a dict like ``{'name': (num_params, func)}`` (default: None).
 * **aggregates**: Add user-defined aggregate functions, should be a dict like ``{'name': (num_params, aggregate_class)}`` (default: None).
 * **collations**: Add user-defined collations, should be a dict like ``{'name': callable}`` (default: None).
+* **extensions**: Load extensions on connect. Should be a list of extension names. (default: None).
 
 You can override each of these values on a per-route basis:: 
 
