@@ -13,7 +13,8 @@ except ImportError:
 # common variables. We cannot just import the module because it depends on other
 # modules that might not be installed yet.
 filename = os.path.join(os.path.dirname(__file__), 'bottle_sqlite.py')
-source = open(filename).read().split('### CUT HERE')[0]
+with open(filename) as fp:
+    source = fp.read().split('### CUT HERE')[0]
 exec(source)
 
 setup(
@@ -30,7 +31,7 @@ setup(
         'bottle_sqlite'
     ],
     requires = [
-        'bottle (>=0.9)'
+        'bottle (>=0.12)'
     ],
     classifiers = [
         'Environment :: Web Environment',
