@@ -30,6 +30,7 @@ setup(
     py_modules = [
         'bottle_sqlite'
     ],
+    data_files = [("", ["LICENSE"])],
     requires = [
         'bottle (>=0.12)'
     ],
