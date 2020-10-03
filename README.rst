@@ -99,7 +99,7 @@ or install two plugins with different ``keyword`` settings to the same applicati
 Changelog
 =========
 
-* **0.2**
-    * Fixed `text_factory` parameter.
-    * Added `functions`, `aggregates`, `collations` and `extensions` parameters.
+* **0.2** 2020-10-03
+    * Fixed ``text_factory`` parameter.
+    * Added ``functions``, ``aggregates``, ``collations`` and ``extensions`` parameters.
     * Stopped testing for dead Python versions.
