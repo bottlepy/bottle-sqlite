@@ -59,8 +59,8 @@ class SQLitePlugin(object):
         unicode = str
 
     def __init__(self, dbfile=':memory:', autocommit=True, dictrows=True,
-                 keyword='db', text_factory=unicode,
-                 functions=None, aggregates=None, collations=None, extensions=()):
+                 keyword='db', text_factory=unicode, functions=None,
+                 aggregates=None, collations=None, extensions=None):
         self.dbfile = dbfile
         self.autocommit = autocommit
         self.dictrows = dictrows
@@ -69,7 +69,7 @@ class SQLitePlugin(object):
         self.functions = functions or {}
         self.aggregates = aggregates or {}
         self.collations = collations or {}
-        self.extensions = extensions
+        self.extensions = extensions or ()
 
     def setup(self, app):
         ''' Make sure that other installed plugins don't affect the same
