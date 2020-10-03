@@ -20,7 +20,7 @@ exec(source)
 setup(
     name = 'bottle-sqlite',
     version = __version__,
-    url = 'http://bottlepy.org/docs/dev/plugins/sqlite.html',
+    url = 'https://github.com/bottlepy/bottle-sqlite',
     description = 'SQLite3 integration for Bottle.',
     long_description = __doc__,
     author = 'Marcel Hellkamp',
