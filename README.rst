@@ -94,3 +94,12 @@ or install two plugins with different ``keyword`` settings to the same applicati
     @app.route('/cache/:item')
     def cache(item, cache):
         ...
+
+
+Changelog
+=========
+
+* **0.2**
+    * Fixed `text_factory` parameter.
+    * Added `functions`, `aggregates`, `collations` and `extensions` parameters.
+    * Stopped testing for dead Python versions.
