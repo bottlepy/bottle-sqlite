@@ -2,12 +2,7 @@
 
 import sys
 import os
-from distutils.core import setup
-
-try:
-    from distutils.command.build_py import build_py_2to3 as build_py
-except ImportError:
-    from distutils.command.build_py import build_py
+from setuptools import setup
 
 # This ugly hack executes the first few lines of the module file to look up some
 # common variables. We cannot just import the module because it depends on other
@@ -30,7 +25,6 @@ setup(
     py_modules = [
         'bottle_sqlite'
     ],
-    data_files = [("", ["LICENSE"])],
     requires = [
         'bottle (>=0.12)'
     ],
@@ -42,6 +36,5 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules'
-    ],
-    cmdclass = {'build_py': build_py}
+    ]
 )
